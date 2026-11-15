@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QLCP | Saurabh Bhatnagar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+:root{--bg:#0f1114;--ink:#f3f1ee;--mute:#9aa0a6;--red:#d7282f;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Sora','Microsoft YaHei','PingFang SC',sans-serif}
+.track{height:320vh;position:relative}
+.stage{position:sticky;top:env(safe-area-inset-top,0px);height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;perspective:1400px;background:radial-gradient(ellipse at 50% 60%,#23272d 0%,var(--bg) 65%)}
+.hero{position:absolute;top:9vh;left:0;right:0;text-align:center;padding:0 20px;will-change:opacity,transform}
+.hero h1{font-size:clamp(34px,7vw,76px);line-height:1.05;margin:0 0 14px;font-weight:700;letter-spacing:-.02em}
+.hero p{margin:0;color:var(--mute);font-size:clamp(14px,2vw,18px)}
+.cue{position:absolute;bottom:7vh;left:0;right:0;text-align:center;color:var(--mute);font-size:14px}
+.cue i{display:block;width:1px;height:38px;background:linear-gradient(var(--red),transparent);margin:10px auto 0}
+.card{position:relative;width:min(88vw,560px);aspect-ratio:7/4;transform-style:preserve-3d;touch-action:pan-y;cursor:grab;will-change:transform}
+.card.drag{cursor:grabbing}
+.face{position:absolute;inset:0;border-radius:10px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 30px 70px rgba(0,0,0,.6)}
+.face img{width:100%;height:100%;display:block;pointer-events:none;-webkit-user-drag:none}
+.back{transform:rotateY(180deg)}
+.ctrl{position:absolute;bottom:5vh;left:0;right:0;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:0 16px;opacity:0;pointer-events:none}
+.ctrl.on{pointer-events:auto}
+button{font:600 14px 'Sora',sans-serif;color:var(--ink);background:#1d2025;border:1px solid #3a3f46;border-radius:999px;padding:12px 20px;cursor:pointer}
+button.pri{background:var(--red);border-color:var(--red)}
+button:hover{filter:brightness(1.15)}
+button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.msg{position:absolute;bottom:13vh;left:0;right:0;text-align:center;font-size:13px;color:var(--mute);min-height:1em}
+</style>
+</head>
+<body>
+<div class="track" id="track">
+ <div class="stage">
+  <div class="hero" id="hero">
+   <h1>Your bridge to the Indian market</h1>
+   <p>Saurabh Bhatnagar, QLCP</p>
+  </div>
+  <div class="card" id="card">
+   <div class="face front"><img id="imgF" alt="Front of the QLCP visiting card"></div>
+   <div class="face back"><img id="imgB" alt="Back of the QLCP visiting card"></div>
+  </div>
+  <div class="cue" id="cue">Scroll to bring the card closer<i></i></div>
+  <div class="msg" id="msg"></div>
+  <div class="ctrl" id="ctrl">
+   <button id="flip">Flip card</button>
+   <button class="pri" id="dF">Download front</button>
+   <button class="pri" id="dB">Download back</button>
+  </div>
+ </div>
+</div>
+<script>
+const W=1050,H=600,RED='#d7282f',F="'Sora','Microsoft YaHei','PingFang SC',sans-serif";
+const PHONE='+91 95499 70628',MAIL='Sb2050@gmail.com',WA='https://wa.me/919549970628';
+const mk=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;return c};
+const cF=mk(),cB=mk();
+const poly=(x,pts,col)=>{x.fillStyle=col;x.beginPath();pts.forEach(([a,b],i)=>i?x.lineTo(a,b):x.moveTo(a,b));x.closePath();x.fill()};
+const txt=(x,s,px,y,xx,col,w=400)=>{x.font=`${w} ${px}px ${F}`;x.fillStyle=col;x.fillText(s,xx,y)};
+
+function front(){
+ const x=cF.getContext('2d');
+ x.fillStyle='#1b1e22';x.fillRect(0,0,W,H);
+ poly(x,[[760,0],[W,0],[W,H],[590,H]],'#262b31');
+ poly(x,[[760,0],[830,0],[660,H],[590,H]],RED);
+ // India-China route
+ x.strokeStyle='#4a5159';x.lineWidth=2;
+ [90,150,210].forEach(r=>{x.beginPath();x.arc(930,300,r,0,7);x.stroke()});
+ x.setLineDash([8,10]);x.strokeStyle='#e9e6e1';x.lineWidth=3;
+ x.beginPath();x.moveTo(880,150);x.quadraticCurveTo(1010,300,900,470);x.stroke();x.setLineDash([]);
+ [[880,150,'CN'],[900,470,'IN']].forEach(([a,b,t])=>{x.fillStyle=RED;x.beginPath();x.arc(a,b,13,0,7);x.fill();x.strokeStyle='#fff';x.lineWidth=3;x.stroke();txt(x,t,22,b+(t=='CN'?-24:42),a-14,'#e9e6e1',700)});
+ // wordmark
+ poly(x,[[60,58],[92,58],[92,90],[60,90]],RED);
+ txt(x,'QLCP',34,88,108,'#fff',700);
+ txt(x,'Saurabh Bhatnagar',50,190,60,'#fff',700);
+ txt(x,'Consultant, plastic molding and automotive localization',20,228,60,'#9aa0a6');
+ x.fillStyle=RED;x.fillRect(60,262,70,5);
+ txt(x,'Your bridge to',46,332,60,'#fff',700);
+ txt(x,'the Indian market',46,386,60,'#fff',700);
+ txt(x,'Sales agent  |  Joint venture partner  |  Local production',19,428,60,'#c9ccd0');
+ x.fillStyle=RED;x.beginPath();x.arc(68,500,7,0,7);x.fill();x.beginPath();x.arc(68,545,7,0,7);x.fill();
+ txt(x,PHONE+'  (WhatsApp)',26,509,88,'#fff');
+ txt(x,MAIL,26,554,88,'#fff');
+}
+
+function back(){
+ const x=cB.getContext('2d');
+ x.fillStyle='#f4f3f0';x.fillRect(0,0,W,H);
+ poly(x,[[W-150,0],[W,0],[W,150]],RED);
+ poly(x,[[W-70,0],[W,0],[W,70]],'#1b1e22');
+ txt(x,'连接中国制造与印度市场',46,100,60,'#1b1e22',700);
+ txt(x,'Connecting Chinese manufacturing with the Indian market',20,138,60,'#5d636a');
+ x.fillStyle=RED;x.fillRect(60,160,70,5);
+ const rows=[['印度销售与分销代理','Sales and distribution agent in India'],['合资与战略合作','Joint ventures and partnerships'],['本地化生产落地','Local production: turnkey plant, tooling, molds'],['洁净室、医疗与效率提升','Cleanroom, medical and productivity expertise']];
+ rows.forEach(([c,e],i)=>{const y=225+i*86;x.fillStyle=RED;x.fillRect(60,y-26,14,14);txt(x,c,30,y,92,'#1b1e22',700);txt(x,e,20,y+30,92,'#5d636a')});
+ // QR
+ const q=qrcode(0,'M');q.addData(WA);q.make();const n=q.getModuleCount(),S=176,ox=W-60-S,oy=H-62-S,m=Math.floor(S/n);
+ x.fillStyle='#fff';x.fillRect(ox-12,oy-12,S+24,S+24);
+ x.fillStyle='#1b1e22';const off=(S-m*n)/2;
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))x.fillRect(ox+off+c*m,oy+off+r*m,m,m);
+ txt(x,'Scan for WhatsApp',17,oy+S+36,ox-6,'#5d636a');
+ txt(x,'Let’s build in India together',24,548,60,'#1b1e22',700);
+ txt(x,'一起在印度发展',24,548,380,RED,700);
+}
+
+const card=document.getElementById('card'),track=document.getElementById('track'),hero=document.getElementById('hero'),cue=document.getElementById('cue'),ctrl=document.getElementById('ctrl'),msg=document.getElementById('msg');
+let p=0,ry=-18,tRy=-18,rx=0,tRx=0,dragging=false,sx=0,sy=0,bRy=0,bRx=0;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),ease=t=>1-Math.pow(1-t,3);
+
+function render(){
+ const e=ease(clamp(p/0.78,0,1));
+ ry+=(tRy-ry)*.12;rx+=(tRx-rx)*.12;
+ const s=.28+.72*e,z=-500*(1-e),introY=(1-e)*-28,introX=(1-e)*30;
+ card.style.transform=`translateZ(${z}px) scale(${s}) rotateX(${rx+introX}deg) rotateY(${ry+introY}deg)`;
+ hero.style.opacity=clamp(1-p*3.2,0,1);hero.style.transform=`translateY(${-p*80}px)`;
+ cue.style.opacity=clamp(1-p*6,0,1);
+ const on=clamp((p-.8)/.15,0,1);ctrl.style.opacity=on;ctrl.classList.toggle('on',on>.5);
+ requestAnimationFrame(render);
+}
+function onScroll(){const r=track.getBoundingClientRect();p=clamp(-r.top/(r.height-innerHeight),0,1)}
+addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);
+
+card.addEventListener('pointerdown',e=>{dragging=true;card.classList.add('drag');sx=e.clientX;sy=e.clientY;bRy=tRy;bRx=tRx;card.setPointerCapture(e.pointerId)});
+card.addEventListener('pointermove',e=>{if(!dragging)return;tRy=bRy+(e.clientX-sx)*.45;tRx=clamp(bRx-(e.clientY-sy)*.3,-35,35)});
+const end=()=>{if(!dragging)return;dragging=false;card.classList.remove('drag');tRx=0};
+card.addEventListener('pointerup',end);card.addEventListener('pointercancel',end);
+document.getElementById('flip').onclick=()=>{tRy=(Math.round(tRy/180)+1)*180;tRx=0};
+
+async function save(c,name){
+ msg.textContent='';
+ const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+ try{
+  const d=await claude.use('downloads');
+  if(d){try{await d.save({filename:name,data:blob})}catch(err){if(err&&err.code==='bad_request')await d.save({filename:name,data:new Uint8Array(await blob.arrayBuffer())});else if(!err||err.code!=='declined')throw err}return}
+ }catch(err){msg.textContent='Download is not available here. Open the page in a browser to save.';return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+}
+document.getElementById('dF').onclick=()=>save(cF,'QLCP-card-front.png');
+document.getElementById('dB').onclick=()=>save(cB,'QLCP-card-back.png');
+
+(async()=>{
+ try{await Promise.all([document.fonts.load("700 40px Sora"),document.fonts.load("400 20px Sora")])}catch(e){}
+ front();back();
+ document.getElementById('imgF').src=cF.toDataURL('image/png');
+ document.getElementById('imgB').src=cB.toDataURL('image/png');
+})();
+onScroll();render();
+</script>
+</body>
+</html>
